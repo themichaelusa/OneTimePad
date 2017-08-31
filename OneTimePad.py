@@ -10,15 +10,15 @@ class OneTimePad(object):
 		saltedKey = self.saltKey(key)
 		self.encryptedData = self.stringsXOR(message, saltedKey)
 		randomFileName = self.generateRandomFilename()
-		self.writePadComponentsToFile(randomFileName, self.encryptedData, key, self.salt1, self.salt2)
+		self.writePadComponentsToFile(randomFileName, key)
 		self.showEncryptionMessage(randomFileName)
    
 	def decrypt(self, encryptedData, salt1, salt2, key):
 		saltedKey = self.salt1 + str(key) + self.salt2
 		decryptedData = self.stringsXOR(encryptedData, saltedKey)
 		randomFileName = self.generateRandomFilename()
-		self.showEncryptionMessage(randomFileName)
 		self.writeDecryptedDataToFile(randomFileName, decryptedData)
+		self.showEncryptionMessage(randomFileName)
 
 	def generateRandomFilename(self):
 		return str(urandom(16)) + ".txt"
@@ -34,13 +34,13 @@ class OneTimePad(object):
 		print("PAD_NAME: " + filename)
 		print("PAD_LOCATION: " + getcwd())
 
-	def writePadComponentsToFile(self, filename, data, key, salt1, salt2):
+	def writePadComponentsToFile(self, filename, key):
 		with open(filename, "a+") as file:
-			file.write("DATA: \n" + data + "\n")
-			file.write("SALT_1: \n" + salt1 + "\n")
-			file.write("SALT_2: \n" + salt2 + "\n")
-			file.write("KEY: \n" + key + "\n")
+			file.write("DATA: \n" + self.encryptedData + "\n\n")
+			file.write("SALT_1: \n" + self.salt1 + "\n\n")
+			file.write("SALT_2: \n" + self.salt2 + "\n\n")
+			file.write("KEY: \n" + key)
 
 	def writeDecryptedDataToFile(self, filename, decryptedData):
 		with open(filename, "a+") as file:
-			file.write("DATA: \n" + decryptedData + "\n")
+			file.write("DATA: \n" + decryptedData)
